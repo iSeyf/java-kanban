@@ -3,44 +3,52 @@ public class Task {
     private String description;
     private int id;
     private String status;
-    private String type="Task";
 
-    public Task(String name, String description, int id){
+    public Task(String name, String description) {
         this.name = name;
         this.description = description;
-        this.id = id;
-        this.status="NEW";
+        this.status = "NEW";
     }
-    public Task(String name, String description, int id,String status) {
-        this.name = name;
-        this.description = description;
+
+    public void setId(int id) {
         this.id = id;
-        this.status=status;
     }
 
     public int getId() {
         return id;
     }
-    public String getName(){
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
         return name;
     }
-    public String getDescription(){
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
         return description;
     }
+
     public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status){
-        this.status=status;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getType() {
-        return type;
+        return "TASK";
     }
 
     @Override
-    public String toString(){
-        return type+"{ "+"Id= "+id+", Name= "+name+", Description= "+description+", Status= "+status+" }";
+    public String toString() {
+        return getType() + "{ " + "Id= " + getId() + ", Name= " + getName() + ", Description= "
+                + getDescription() + ", Status= " + getStatus() + " }";
     }
 }
