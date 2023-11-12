@@ -1,3 +1,8 @@
+import Manager.TaskManager;
+import Tasks.Epic;
+import Tasks.Subtask;
+import Tasks.Task;
+
 public class Main {
     public static void main(String[] args) {
         TaskManager taskManager = new TaskManager();
@@ -21,10 +26,14 @@ public class Main {
         System.out.println(taskManager.getAllSubtasks());
         System.out.println();
 
-        taskManager.updateTask(task1, "DONE");
-        taskManager.updateSubtask(subtask1, "DONE");
-        taskManager.updateSubtask(subtask2, "NEW");
-        taskManager.updateSubtask(subtask3, "DONE");
+        task1.setStatus("DONE");
+        taskManager.updateTask(task1);
+        subtask1.setStatus("DONE");
+        taskManager.updateSubtask(subtask1);
+        subtask2.setStatus("IN_PROGRESS");
+        taskManager.updateSubtask(subtask2);
+        subtask3.setStatus("DONE");
+        taskManager.updateSubtask(subtask3);
         System.out.println(taskManager.getAllTasks());
         System.out.println(taskManager.getAllEpics());
         System.out.println(taskManager.getAllSubtasks());
@@ -32,11 +41,12 @@ public class Main {
 
         taskManager.deleteTaskById(1);
         taskManager.deleteEpicById(4);
-        taskManager.deleteSubtaskById(6);
+        taskManager.deleteSubtaskById(5);
         System.out.println(taskManager.getAllTasks());
         System.out.println(taskManager.getAllEpics());
         System.out.println(taskManager.getAllSubtasks());
         System.out.println();
+
 
     }
 }
