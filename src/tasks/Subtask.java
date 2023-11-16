@@ -20,6 +20,6 @@ public class Subtask extends Task {
     @Override
     public String toString() {
         return getType() + "{ " + "Id= " + getId() + ", Name= " + getName() + ", Description= " + getDescription()
-                + ", Status= " + getStatus() + ", Tasks.Epic ID=" + epicId + " }";
+                + ", Status= " + getStatus() + ", Epic ID=" + epicId + " }";
     }
 }

@@ -10,6 +10,7 @@ public class Epic extends Task {
         super(name, description);
     }
 
+    @Override
     public String getType() {
         return "EPIC";
     }

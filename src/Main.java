@@ -1,11 +1,16 @@
-import manager.TaskManager;
+import managers.Managers;
+import taskManager.InMemoryTaskManager;
+import taskManager.TaskManager;
+import managers.Managers;
 import tasks.Epic;
+import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
 
 public class Main {
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+
+        TaskManager taskManager = Managers.getDefault();
         Task task1 = new Task("Задача 1", "Описание 1");
         taskManager.addTask(task1);
         Task task2 = new Task("Задача 2", "Описание 2");
@@ -21,29 +26,26 @@ public class Main {
         Subtask subtask3 = new Subtask("Подзадача 1", "Описание подзадачи 1", epic2.getId());
         taskManager.addSubtask(subtask3);
 
-        System.out.println(taskManager.getAllTasks());
-        System.out.println(taskManager.getAllEpics());
-        System.out.println(taskManager.getAllSubtasks());
-        System.out.println();
-
-        task1.setStatus("DONE");
+        task1.setStatus(Status.DONE);
         taskManager.updateTask(task1);
-        subtask1.setStatus("DONE");
+        subtask1.setStatus(Status.DONE);
         taskManager.updateSubtask(subtask1);
-        subtask2.setStatus("IN_PROGRESS");
+        subtask2.setStatus(Status.IN_PROGRESS);
         taskManager.updateSubtask(subtask2);
-        subtask3.setStatus("DONE");
+        subtask3.setStatus(Status.DONE);
         taskManager.updateSubtask(subtask3);
-        System.out.println(taskManager.getAllTasks());
-        System.out.println(taskManager.getAllEpics());
-        System.out.println(taskManager.getAllSubtasks());
-        System.out.println();
 
-        taskManager.deleteTaskById(1);
-        taskManager.deleteEpicById(4);
-        taskManager.deleteSubtaskById(6);
-        System.out.println(taskManager.getAllTasks());
-        System.out.println(taskManager.getAllEpics());
-        System.out.println(taskManager.getAllSubtasks());
+        System.out.println(taskManager.getEpicById(3));
+        System.out.println(taskManager.getTaskById(1));
+        System.out.println(taskManager.getTaskById(2));
+        System.out.println(taskManager.getTaskById(2));
+        System.out.println(taskManager.getTaskById(1));
+        System.out.println(taskManager.getEpicById(4));
+        System.out.println(taskManager.getEpicById(3));
+        System.out.println(taskManager.getSubtaskById(5));
+        System.out.println(taskManager.getSubtaskById(6));
+        System.out.println(taskManager.getSubtaskById(7));
+        System.out.println(taskManager.getSubtaskById(5));
+        System.out.println(taskManager.getHistory());
     }
 }
