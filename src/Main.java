@@ -1,7 +1,5 @@
 import managers.Managers;
-import taskManager.InMemoryTaskManager;
-import taskManager.TaskManager;
-import managers.Managers;
+import interfaces.TaskManager;
 import tasks.Epic;
 import tasks.Status;
 import tasks.Subtask;

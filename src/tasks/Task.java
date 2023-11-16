@@ -44,8 +44,8 @@ public class Task {
         this.status = status;
     }
 
-    public String getType() {
-        return "TASK";
+    public Type getType() {
+        return Type.TASK;
     }
 
     @Override

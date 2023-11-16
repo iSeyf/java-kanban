@@ -11,8 +11,8 @@ public class Epic extends Task {
     }
 
     @Override
-    public String getType() {
-        return "EPIC";
+    public Type getType() {
+        return Type.EPIC;
     }
 
     public void addSubtaskId(int id) {
