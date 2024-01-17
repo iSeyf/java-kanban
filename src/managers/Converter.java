@@ -30,12 +30,12 @@ public class Converter {
         return history.toString();
     }
 
-    public String TaskToString(Task task) {
+    public static String TaskToString(Task task) {
         return String.format("%d,%s,%s,%s,%s,", task.getId(), task.getType(), task.getName(), task.getStatus(),
                 task.getDescription());
     }
 
-    public Task TaskFromString(String value) {
+    public static Task TaskFromString(String value) {
         String[] taskData = value.split(",");
         int taskId = Integer.parseInt(taskData[0]);
         Type taskType = Type.valueOf(taskData[1]);

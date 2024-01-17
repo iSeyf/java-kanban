@@ -16,44 +16,47 @@ import java.util.List;
 import java.util.Map;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    private final static String PATH = "src/data/data.csv";
-    Converter converter = new Converter();
+    private static File fileName;
+
+    public FileBackedTasksManager(File file) {
+        fileName = file;
+    }
 
     public void save() {
-        try (FileWriter fileWriter = new FileWriter(PATH)) {
+        try (FileWriter fileWriter = new FileWriter(fileName)) {
             if (!taskMap.isEmpty()) {
                 fileWriter.write("id,type,name,status,description,epic,\n");
                 for (Map.Entry<Integer, Task> entry : taskMap.entrySet()) {
-                    fileWriter.write(converter.TaskToString(entry.getValue()) + "\n");
+                    fileWriter.write(Converter.TaskToString(entry.getValue()) + "\n");
                 }
             }
             if (!epicMap.isEmpty()) {
                 for (Map.Entry<Integer, Epic> entry : epicMap.entrySet()) {
-                    fileWriter.write(converter.TaskToString(entry.getValue()) + "\n");
+                    fileWriter.write(Converter.TaskToString(entry.getValue()) + "\n");
                 }
             }
             if (!subtaskMap.isEmpty()) {
                 for (Map.Entry<Integer, Subtask> entry : subtaskMap.entrySet()) {
-                    fileWriter.write(converter.TaskToString(entry.getValue()) + entry.getValue().getEpicId() + ",\n");
+                    fileWriter.write(Converter.TaskToString(entry.getValue()) + entry.getValue().getEpicId() + ",\n");
                 }
             }
             if (!getHistory().isEmpty()) {
                 fileWriter.write("\n");
-                fileWriter.write(converter.historyToString(historyManager));
+                fileWriter.write(Converter.historyToString(historyManager));
             }
         } catch (IOException exception) {
             throw new ManagerSaveException(exception.getMessage());
         }
     }
 
-    public static FileBackedTasksManager loadFromFile(File file) {
-        FileBackedTasksManager manager = new FileBackedTasksManager();
-        try (BufferedReader fileReader = new BufferedReader(new FileReader(PATH))) {
+    public static FileBackedTasksManager loadFromFile(File fromFile) {
+        FileBackedTasksManager manager = new FileBackedTasksManager(fromFile);
+        try (BufferedReader fileReader = new BufferedReader(new FileReader(fromFile))) {
             fileReader.readLine();
             while (fileReader.ready()) {
                 String line = fileReader.readLine();
                 if (!line.isEmpty()) {
-                    Task task = manager.converter.TaskFromString(line);
+                    Task task = Converter.TaskFromString(line);
                     if (task.getType().equals(Type.TASK)) {
                         manager.taskMap.put(task.getId(), task);
                     } else if (task.getType().equals(Type.EPIC)) {
@@ -64,7 +67,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                         manager.subtaskMap.put(task.getId(), subtask);
                     }
                 } else {
-                    List<Integer> historyList = manager.converter.historyFromString(fileReader.readLine());
+                    List<Integer> historyList = Converter.historyFromString(fileReader.readLine());
                     for (int taskId : historyList) {
                         if (manager.taskMap.containsKey(taskId)) {
                             manager.historyManager.add(manager.taskMap.get(taskId));
@@ -177,7 +180,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     public static void main(String[] args) {
-        FileBackedTasksManager manager = new FileBackedTasksManager();
+        File file = new File("src/data/data.csv");
+        FileBackedTasksManager manager = new FileBackedTasksManager(file);
         Task task1 = new Task("task1", "taskDescription1");
         manager.addTask(task1);
         Task task2 = new Task("task2", "taskDescription2");
@@ -208,11 +212,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         System.out.println(manager.getHistory());
         System.out.println();
 
-
-        FileBackedTasksManager manager2 = FileBackedTasksManager.loadFromFile(new File("src/data/data.csv"));
-        System.out.println(manager2.getAllTasks());
-        System.out.println(manager2.getAllEpics());
-        System.out.println(manager2.getAllSubtasks());
+        FileBackedTasksManager manager2 = FileBackedTasksManager.loadFromFile(file);
         System.out.println(manager2.getHistory());
     }
 }
