@@ -7,11 +7,17 @@ import tasks.Subtask;
 import tasks.Status;
 import tasks.Type;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Converter {
     public static List<Integer> historyFromString(String value) {
+        if (value.isEmpty()) {
+            return null;
+        }
         String[] history = value.split(",");
         List<Integer> historyList = new ArrayList<>();
         for (String taskId : history) {
@@ -31,8 +37,8 @@ public class Converter {
     }
 
     public static String TaskToString(Task task) {
-        return String.format("%d,%s,%s,%s,%s,", task.getId(), task.getType(), task.getName(), task.getStatus(),
-                task.getDescription());
+        return String.format("%d,%s,%s,%s,%s,%s,%s,", task.getId(), task.getType(), task.getName(), task.getStatus(),
+                task.getDescription(), task.getStartTime(), task.getDuration());
     }
 
     public static Task TaskFromString(String value) {
@@ -42,17 +48,40 @@ public class Converter {
         String taskName = taskData[2];
         Status taskStatus = Status.valueOf(taskData[3]);
         String taskDescription = taskData[4];
+        LocalDateTime taskStartTime = null;
+        Duration taskDuration = null;
+        if (!taskData[5].equals("null")) {
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+            taskStartTime = LocalDateTime.parse(taskData[5], formatter);
+        }
+        if (!taskData[6].equals("null")) {
+            taskDuration = Duration.parse(taskData[6]);
+        }
+
+
         if (taskType.equals(Type.TASK)) {
             Task task = new Task(taskName, taskDescription);
             task.setId(taskId);
             task.setStatus(taskStatus);
+            if (taskStartTime != null) {
+                task.setStartTime(taskStartTime);
+            }
+            if (taskDuration != null) {
+                task.setDuration(taskDuration);
+            }
             return task;
         }
         if (taskType.equals(Type.SUBTASK)) {
-            int epicId = Integer.parseInt(taskData[5]);
+            int epicId = Integer.parseInt(taskData[7]);
             Subtask subtask = new Subtask(taskName, taskDescription, epicId);
             subtask.setId(taskId);
             subtask.setStatus(taskStatus);
+            if (taskStartTime != null) {
+                subtask.setStartTime(taskStartTime);
+            }
+            if (taskDuration != null) {
+                subtask.setDuration(taskDuration);
+            }
             return subtask;
         }
         Epic epic = new Epic(taskName, taskDescription);

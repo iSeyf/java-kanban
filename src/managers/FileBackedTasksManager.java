@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.File;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -24,8 +26,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public void save() {
         try (FileWriter fileWriter = new FileWriter(fileName)) {
+            fileWriter.write("id,type,name,status,description,startTime,duration,epic,\n");
             if (!taskMap.isEmpty()) {
-                fileWriter.write("id,type,name,status,description,epic,\n");
                 for (Map.Entry<Integer, Task> entry : taskMap.entrySet()) {
                     fileWriter.write(Converter.TaskToString(entry.getValue()) + "\n");
                 }
@@ -59,22 +61,26 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                     Task task = Converter.TaskFromString(line);
                     if (task.getType().equals(Type.TASK)) {
                         manager.taskMap.put(task.getId(), task);
+                        manager.taskSet.add(task);
                     } else if (task.getType().equals(Type.EPIC)) {
                         Epic epic = (Epic) task;
                         manager.epicMap.put(task.getId(), epic);
                     } else if (task.getType().equals(Type.SUBTASK)) {
                         Subtask subtask = (Subtask) task;
                         manager.subtaskMap.put(task.getId(), subtask);
+                        manager.taskSet.add(subtask);
                     }
                 } else {
                     List<Integer> historyList = Converter.historyFromString(fileReader.readLine());
-                    for (int taskId : historyList) {
-                        if (manager.taskMap.containsKey(taskId)) {
-                            manager.historyManager.add(manager.taskMap.get(taskId));
-                        } else if (manager.epicMap.containsKey(taskId)) {
-                            manager.historyManager.add(manager.epicMap.get(taskId));
-                        } else if (manager.subtaskMap.containsKey(taskId)) {
-                            manager.historyManager.add(manager.subtaskMap.get(taskId));
+                    if (historyList != null) {
+                        for (int taskId : historyList) {
+                            if (manager.taskMap.containsKey(taskId)) {
+                                manager.historyManager.add(manager.taskMap.get(taskId));
+                            } else if (manager.epicMap.containsKey(taskId)) {
+                                manager.historyManager.add(manager.epicMap.get(taskId));
+                            } else if (manager.subtaskMap.containsKey(taskId)) {
+                                manager.historyManager.add(manager.subtaskMap.get(taskId));
+                            }
                         }
                     }
                     break;
@@ -190,11 +196,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         manager.addEpic(epic1);
         Epic epic2 = new Epic("epic2", "epicDescription2");
         manager.addEpic(epic2);
-        Subtask subtask1 = new Subtask("subtask1", "subtaskDescription1", epic1.getId());
+        Subtask subtask1 = new Subtask("subtask1", "subtaskDescription1", epic1.getId(), LocalDateTime.now(), Duration.ofMinutes(30));
         manager.addSubtask(subtask1);
-        Subtask subtask2 = new Subtask("subtask2", "subtaskDescription2", epic1.getId());
+        Subtask subtask2 = new Subtask("subtask2", "subtaskDescription2", epic1.getId(), LocalDateTime.now().plus(Duration.ofMinutes(45)), Duration.ofMinutes(30));
         manager.addSubtask(subtask2);
-        Subtask subtask3 = new Subtask("subtask3", "subtaskDescription3", epic2.getId());
+        Subtask subtask3 = new Subtask("subtask3", "subtaskDescription3", epic2.getId(), LocalDateTime.now().plus(Duration.ofMinutes(80)), Duration.ofMinutes(30));
         manager.addSubtask(subtask3);
 
         subtask1.setStatus(Status.DONE);
@@ -214,5 +220,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         FileBackedTasksManager manager2 = FileBackedTasksManager.loadFromFile(file);
         System.out.println(manager2.getHistory());
+        System.out.println(manager2.getAllSubtasks());
+        System.out.println();
+        System.out.println();
+        System.out.println(manager.getPrioritizedTasks());
+        System.out.println(manager2.getPrioritizedTasks());
     }
 }
