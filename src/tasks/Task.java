@@ -8,7 +8,7 @@ public class Task {
     private String description;
     private int id;
     private Status status;
-    private Duration duration;
+    private int duration;
     private LocalDateTime startTime;
 
     public Task(String name, String description) {
@@ -17,7 +17,7 @@ public class Task {
         this.status = Status.NEW;
     }
 
-    public Task(String name, String description, LocalDateTime startTime, Duration duration) {
+    public Task(String name, String description, LocalDateTime startTime, int duration) {
         this.name = name;
         this.description = description;
         this.startTime = startTime;
@@ -69,19 +69,19 @@ public class Task {
         return startTime;
     }
 
-    public void setDuration(Duration duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 
-    public Duration getDuration() {
+    public int getDuration() {
         return duration;
     }
 
     public LocalDateTime getEndTime() {
-        if (startTime == null || duration == null) {
+        if (startTime == null || duration == 0) {
             return null;
         }
-        return startTime.plus(duration);
+        return startTime.plusMinutes(duration);
     }
 
     @Override

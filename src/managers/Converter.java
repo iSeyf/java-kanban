@@ -49,13 +49,13 @@ public class Converter {
         Status taskStatus = Status.valueOf(taskData[3]);
         String taskDescription = taskData[4];
         LocalDateTime taskStartTime = null;
-        Duration taskDuration = null;
+        int taskDuration = 0;
         if (!taskData[5].equals("null")) {
             DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
             taskStartTime = LocalDateTime.parse(taskData[5], formatter);
         }
         if (!taskData[6].equals("null")) {
-            taskDuration = Duration.parse(taskData[6]);
+            taskDuration = Integer.parseInt(taskData[6]);
         }
 
 
@@ -66,7 +66,7 @@ public class Converter {
             if (taskStartTime != null) {
                 task.setStartTime(taskStartTime);
             }
-            if (taskDuration != null) {
+            if (taskDuration != 0) {
                 task.setDuration(taskDuration);
             }
             return task;
@@ -79,7 +79,7 @@ public class Converter {
             if (taskStartTime != null) {
                 subtask.setStartTime(taskStartTime);
             }
-            if (taskDuration != null) {
+            if (taskDuration != 0) {
                 subtask.setDuration(taskDuration);
             }
             return subtask;

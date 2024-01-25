@@ -1,8 +1,6 @@
 id,type,name,status,description,startTime,duration,epic,
-1,TASK,task1,NEW,taskDescription1,null,null,
-2,TASK,task2,NEW,taskDescription2,null,null,
-3,EPIC,epic1,IN_PROGRESS,epicDescription1,2024-01-24T11:13:11.186677800,PT1H,
-4,EPIC,epic2,DONE,epicDescription2,2024-01-24T12:33:11.202678100,PT30M,
-5,SUBTASK,subtask1,DONE,subtaskDescription1,2024-01-24T11:13:11.186677800,PT30M,3,
-6,SUBTASK,subtask2,IN_PROGRESS,subtaskDescription2,2024-01-24T11:58:11.198678600,PT30M,3,
-7,SUBTASK,subtask3,DONE,subtaskDescription3,2024-01-24T12:33:11.202678100,PT30M,4,
+1,TASK,task,NEW,taskDescription,2024-01-26T00:06:56.756493900,30,
+2,EPIC,epic,NEW,epicDescription,2024-01-26T00:41:56.796388,30,
+3,SUBTASK,subtask,NEW,subtaskDescription,2024-01-26T00:41:56.796388,30,2,
+
+1,3,2,

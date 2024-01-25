@@ -16,7 +16,7 @@ class TaskTest {
         assertNull(task.getEndTime(), "EndTime не пуст.");
 
         task.setStartTime(LocalDateTime.MIN);
-        task.setDuration(Duration.ofMinutes(30));
+        task.setDuration(30);
         LocalDateTime endTimeForTest = LocalDateTime.MIN.plus(Duration.ofMinutes(30));
         assertEquals(endTimeForTest, task.getEndTime(), "Неправильный расчет.");
     }

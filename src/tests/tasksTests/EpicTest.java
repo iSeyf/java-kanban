@@ -92,9 +92,11 @@ class EpicTest {
         assertNull(epic.getEndTime(), "EndTime не пуст.");
 
         subtask1.setStartTime(LocalDateTime.MIN);
-        subtask1.setDuration(Duration.ofMinutes(30));
+        subtask1.setDuration(30);
+        taskManager.updateSubtask(subtask1);
         subtask2.setStartTime(LocalDateTime.MIN.plus(Duration.ofMinutes(35)));
-        subtask2.setDuration(Duration.ofMinutes(30));
+        subtask2.setDuration(30);
+        taskManager.updateSubtask(subtask2);
         LocalDateTime endTimeForTest = subtask2.getEndTime();
 
         assertEquals(endTimeForTest, epic.getEndTime(), "Неправильный расчет.");

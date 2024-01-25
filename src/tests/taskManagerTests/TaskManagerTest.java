@@ -289,17 +289,17 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     public void getPrioritizedTasksTest() {
         assertTrue(taskManager.getPrioritizedTasks().isEmpty(), "Список должен быть пуст.");
-        Task task1 = new Task("task1", "taskDescription1", LocalDateTime.now(), Duration.ofMinutes(30));
+        Task task1 = new Task("task1", "taskDescription1", LocalDateTime.now(), 30);
         taskManager.addTask(task1);
         Task task2 = new Task("task2", "taskDescription2");
         taskManager.addTask(task2);
         Epic epic1 = new Epic("epic1", "epicDescription1");
         taskManager.addEpic(epic1);
         Subtask subtask1 = new Subtask("subtask1", "subtaskDescription1", epic1.getId(),
-                LocalDateTime.now().plus(Duration.ofMinutes(70)), Duration.ofMinutes(30));
+                LocalDateTime.now().plus(Duration.ofMinutes(70)), 30);
         taskManager.addSubtask(subtask1);
         Subtask subtask2 = new Subtask("subtask2", "subtaskDescription2", epic1.getId(),
-                LocalDateTime.now().plus(Duration.ofMinutes(35)), Duration.ofMinutes(30));
+                LocalDateTime.now().plus(Duration.ofMinutes(35)), 30);
         taskManager.addSubtask(subtask2);
         TreeSet<Task> taskTreeSet = taskManager.getPrioritizedTasks();
 

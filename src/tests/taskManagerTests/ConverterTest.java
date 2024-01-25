@@ -51,7 +51,7 @@ class ConverterTest {
 
     @Test
     public void toStringWithStartTimeAndDurationTest() {
-        Task task = new Task("Task1", "taskDescription1", LocalDateTime.now(), Duration.ofMinutes(30));
+        Task task = new Task("Task1", "taskDescription1", LocalDateTime.now(), 30);
         taskManager.addTask(task);
 
         String taskString = Converter.TaskToString(task);
@@ -62,7 +62,7 @@ class ConverterTest {
         Epic epic = new Epic("Epic1", "epicDescription1");
         taskManager.addEpic(epic);
         Subtask subtask = new Subtask("Subtask1", "subtaskDescription1", epic.getId(),
-                LocalDateTime.now().plus(Duration.ofMinutes(35)), Duration.ofMinutes(30));
+                LocalDateTime.now().plus(Duration.ofMinutes(35)), 30);
         taskManager.addSubtask(subtask);
 
         String epicString = Converter.TaskToString(epic);
@@ -85,8 +85,8 @@ class ConverterTest {
         assertEquals(task.toString(), task2.toString(), "Задачи не совпадают.");
         task.setStartTime(LocalDateTime.now());
         task2.setStartTime(LocalDateTime.now());
-        task.setDuration(Duration.ofMinutes(30));
-        task2.setDuration(Duration.ofMinutes(30));
+        task.setDuration(30);
+        task2.setDuration(30);
         assertEquals(task.toString(), task2.toString(), "Задачи не совпадают.");
 
         Epic epic = new Epic("Epic1", "epicDescription1");
@@ -102,8 +102,8 @@ class ConverterTest {
         assertEquals(subtask.toString(), subtask2.toString(), "Задачи не совпадают.");
         subtask.setStartTime(LocalDateTime.MIN);
         subtask2.setStartTime(LocalDateTime.MIN);
-        subtask.setDuration(Duration.ofMinutes(30));
-        subtask2.setDuration(Duration.ofMinutes(30));
+        subtask.setDuration(30);
+        subtask2.setDuration(30);
         assertEquals(subtask.toString(), subtask2.toString(), "Задачи не совпадают.");
     }
 

@@ -16,7 +16,7 @@ class SubtaskTest {
         assertNull(subtask.getEndTime(), "EndTime не пуст.");
 
         subtask.setStartTime(LocalDateTime.MIN);
-        subtask.setDuration(Duration.ofMinutes(30));
+        subtask.setDuration(30);
         LocalDateTime endTimeForTest = LocalDateTime.MIN.plus(Duration.ofMinutes(30));
         assertEquals(endTimeForTest, subtask.getEndTime(), "Неправильный расчет");
     }
