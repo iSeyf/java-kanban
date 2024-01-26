@@ -7,7 +7,6 @@ import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -236,7 +235,7 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager;
     }
 
-    public void calculateTimeForEpic(Integer epicId) {
+    private void calculateTimeForEpic(Integer epicId) {
         Epic epic = epicMap.get(epicId);
         if (!epic.getSubtasks().isEmpty()) {
             LocalDateTime earliestStartTime = null;

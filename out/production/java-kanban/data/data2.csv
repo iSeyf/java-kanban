@@ -1,4 +1,2 @@
 id,type,name,status,description,startTime,duration,epic,
-1,TASK,task,NEW,taskDescription,2024-01-25T23:57:12.602992500,30,
-2,EPIC,epic,NEW,epicDescription,2024-01-26T00:32:12.609973400,30,
-3,SUBTASK,subtask,NEW,subtaskDescription,2024-01-26T00:32:12.609973400,30,2,
+1,EPIC,epic,NEW,epicDescription,null,0,

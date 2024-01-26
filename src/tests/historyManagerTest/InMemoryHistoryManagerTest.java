@@ -51,54 +51,16 @@ class InMemoryHistoryManagerTest {
         manager.add(task2);
         manager.add(task3);
         manager.add(task4);
-        manager.remove(task3.getId());
-        historyList.add(task1);
-        historyList.add(task2);
-        historyList.add(task4);
-        assertEquals(historyList, manager.getHistory());
-    }
-
-    @Test
-    public void removeFirstTask() {
-        List<Task> historyList = new ArrayList<>();
-        Task task1 = new Task("task1", "task1Description");
-        task1.setId(1);
-        Task task2 = new Task("task2", "task2Description");
-        task2.setId(2);
-        Task task3 = new Task("task3", "task3Description");
-        task3.setId(3);
-        Task task4 = new Task("task4", "task4Description");
-        task4.setId(4);
-        manager.add(task1);
-        manager.add(task2);
-        manager.add(task3);
-        manager.add(task4);
         manager.remove(task1.getId());
         historyList.add(task2);
         historyList.add(task3);
         historyList.add(task4);
         assertEquals(historyList, manager.getHistory());
-    }
-
-    @Test
-    public void removeLastTask() {
-        List<Task> historyList = new ArrayList<>();
-        Task task1 = new Task("task1", "task1Description");
-        task1.setId(1);
-        Task task2 = new Task("task2", "task2Description");
-        task2.setId(2);
-        Task task3 = new Task("task3", "task3Description");
-        task3.setId(3);
-        Task task4 = new Task("task4", "task4Description");
-        task4.setId(4);
-        manager.add(task1);
-        manager.add(task2);
-        manager.add(task3);
-        manager.add(task4);
+        manager.remove(task3.getId());
+        historyList.remove(task3);
+        assertEquals(historyList,manager.getHistory());
         manager.remove(task4.getId());
-        historyList.add(task1);
-        historyList.add(task2);
-        historyList.add(task3);
-        assertEquals(historyList, manager.getHistory());
+        historyList.remove(task4);
+        assertEquals(historyList,manager.getHistory());
     }
 }
