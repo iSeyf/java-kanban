@@ -7,6 +7,7 @@ import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     abstract public void setTaskManager();
 
     @BeforeEach
-    public void beforeEach() {
+    public void beforeEach() throws IOException {
         setTaskManager();
     }
 

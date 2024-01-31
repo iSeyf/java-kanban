@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.File;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +19,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public FileBackedTasksManager(File file) {
         fileName = file;
+    }
+
+    public FileBackedTasksManager() {
     }
 
     public void save() {
@@ -183,28 +185,5 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public void deleteSubtaskById(Integer id) {
         super.deleteSubtaskById(id);
         save();
-    }
-
-    public static void main(String[] args) {
-        File file = new File("src/data/data.csv");
-        FileBackedTasksManager taskManager = new FileBackedTasksManager(file);
-        Task task = new Task("task", "taskDescription", LocalDateTime.now(), 30);
-        taskManager.addTask(task);
-        Epic epic = new Epic("epic", "epicDescription");
-        taskManager.addEpic(epic);
-        Subtask subtask = new Subtask("subtask", "subtaskDescription", epic.getId(), LocalDateTime.now().plusMinutes(35), 30);
-        taskManager.addSubtask(subtask);
-        taskManager.updateEpic(epic);
-
-        taskManager.getEpicById(2);
-        taskManager.getTaskById(1);
-        taskManager.getSubtaskById(3);
-        System.out.println(taskManager.getSubtasksInEpic(2));
-        System.out.println(taskManager.getEpicById(2));
-        taskManager.save();
-
-        FileBackedTasksManager manager2 = FileBackedTasksManager.loadFromFile(file);
-        System.out.println(manager2.getSubtasksInEpic(2));
-        System.out.println(manager2.getEpicById(2));
     }
 }
