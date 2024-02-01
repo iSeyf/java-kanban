@@ -2,6 +2,7 @@ package tests.taskManagerTests;
 
 import interfaces.TaskManager;
 import managers.Converter;
+import managers.InMemoryTaskManager;
 import managers.Managers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ class ConverterTest {
 
     @BeforeEach
     public void beforeEach() {
-        taskManager = Managers.getDefault();
+        taskManager = new InMemoryTaskManager();
     }
 
     @Test

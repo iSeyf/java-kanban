@@ -14,8 +14,8 @@ import java.net.InetSocketAddress;
 public class HttpTaskServer {
     private static final int PORT = 8080;
 
-    TaskManager taskManager;
-    HttpServer server;
+    private final TaskManager taskManager;
+    private final HttpServer server;
 
     public HttpTaskServer(TaskManager taskManager) throws IOException {
         this.taskManager = taskManager;

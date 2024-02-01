@@ -25,14 +25,10 @@ public class TasksHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        Endpoint endpoint = getEndpoint(exchange.getRequestURI().toString(), exchange.getRequestMethod());
+        Endpoint endpoint = getEndpoint(exchange, exchange.getRequestMethod());
         switch (endpoint) {
             case GET_TASKS: {
-                if (manager.getAllTasks().isEmpty()) {
-                    writeResponse(exchange, "Список задач пуст", 200);
-                } else {
-                    writeResponse(exchange, gson.toJson(manager.getAllTasks()), 200);
-                }
+                writeResponse(exchange, gson.toJson(manager.getAllTasks()), 200);
                 break;
             }
             case GET_TASK_BY_ID: {
@@ -41,7 +37,7 @@ public class TasksHandler implements HttpHandler {
                     int id = taskId.get();
                     if (manager.getTaskById(id) != null) {
                         writeResponse(exchange, gson.toJson(manager.getTaskById(id)), 200);
-                    }else {
+                    } else {
                         writeResponse(exchange, "Такой задачи нет!", 400);
                     }
                 } else {
@@ -97,7 +93,8 @@ public class TasksHandler implements HttpHandler {
         }
     }
 
-    protected Endpoint getEndpoint(String requestPath, String requestMethod) {
+    protected Endpoint getEndpoint(HttpExchange exchange, String requestMethod) throws IOException {
+        String requestPath = exchange.getRequestURI().toString();
         String[] pathParts = requestPath.split("/");
         switch (requestMethod) {
             case "GET": {
@@ -111,13 +108,21 @@ public class TasksHandler implements HttpHandler {
                 break;
             }
             case "POST": {
-                return Endpoint.POST_TASK;
+                if (pathParts.length == 3) {
+                    return Endpoint.POST_TASK;
+                } else {
+                    writeResponse(exchange, "Ожидается другой метод! Метод POST здесь некорректен!",
+                            405);
+                }
             }
             case "DELETE": {
                 if (pathParts.length == 3) {
                     return Endpoint.DELETE_ALL_TASKS;
                 } else if (pathParts.length == 4) {
                     return Endpoint.DELETE_TASK_BY_ID;
+                } else {
+                    writeResponse(exchange, "Ожидается другой метод! Метод DELETE здесь некорректен!",
+                            405);
                 }
             }
             default: {

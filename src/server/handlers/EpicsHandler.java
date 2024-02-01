@@ -16,14 +16,10 @@ public class EpicsHandler extends TasksHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        Endpoint endpoint = getEndpoint(exchange.getRequestURI().toString(), exchange.getRequestMethod());
+        Endpoint endpoint = getEndpoint(exchange, exchange.getRequestMethod());
         switch (endpoint) {
             case GET_TASKS: {
-                if (manager.getAllEpics().isEmpty()) {
-                    writeResponse(exchange, "Список эпиков пуст", 200);
-                } else {
-                    writeResponse(exchange, gson.toJson(manager.getAllEpics()), 200);
-                }
+                writeResponse(exchange, gson.toJson(manager.getAllEpics()), 200);
                 break;
             }
             case GET_TASK_BY_ID: {

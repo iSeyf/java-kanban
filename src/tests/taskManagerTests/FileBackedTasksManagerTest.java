@@ -24,7 +24,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
 
     @Test
     public void saveAndLoadEmptyListTest() {
-        taskManager.save();
+        taskManager.addTask(null);
         FileBackedTasksManager manager2 = FileBackedTasksManager.loadFromFile(file);
         assertTrue(manager2.getAllTasks().isEmpty(), "Список не пустой.");
         assertTrue(manager2.getAllEpics().isEmpty(), "Список не пустой.");

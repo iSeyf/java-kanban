@@ -235,7 +235,7 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager;
     }
 
-    private void calculateTimeForEpic(Integer epicId) {
+    protected void calculateTimeForEpic(Integer epicId) {
         Epic epic = epicMap.get(epicId);
         if (!epic.getSubtasks().isEmpty()) {
             LocalDateTime earliestStartTime = null;
@@ -289,7 +289,7 @@ public class InMemoryTaskManager implements TaskManager {
         return ++id;
     }
 
-    private void updateEpicStatus(Integer epicId) {
+    protected void updateEpicStatus(Integer epicId) {
         Status newStatus;
         Epic epic = epicMap.get(epicId);
         List<Subtask> subtaskList = epic.getSubtasks();

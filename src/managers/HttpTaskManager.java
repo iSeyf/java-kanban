@@ -8,36 +8,37 @@ import client.KVTaskClient;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
-import tasks.Type;
+
+import java.util.List;
 
 public class HttpTaskManager extends FileBackedTasksManager {
-    static KVTaskClient client;
-    String url;
-    static Gson gson = new Gson();
+    protected KVTaskClient client;
+    private final Gson gson;
 
-    public HttpTaskManager(String url) {
-        this.url = url;
+    public HttpTaskManager(String url, boolean isLoad) {
         client = new KVTaskClient(url);
+        gson = new Gson();
+        if (isLoad) {
+            load(url);
+        }
     }
 
-    @Override
-    public void save() {
+    protected void save() {
         client.put("tasks", gson.toJson(getAllTasks()));
         client.put("epics", gson.toJson(getAllEpics()));
         client.put("subtasks", gson.toJson(getAllSubtasks()));
-        client.put("history", gson.toJson(getHistory()));
-        client.put("prioritized", gson.toJson(getPrioritizedTasks()));
+        String history = Converter.historyToString(historyManager);
+        client.put("history", gson.toJson(history));
     }
 
-    public static HttpTaskManager load(String url) {
-        HttpTaskManager manager = new HttpTaskManager(url);
+    private void load(String url) {
         if (!client.load("tasks").isEmpty()) {
             JsonElement jsonElement = JsonParser.parseString(client.load("tasks"));
             JsonArray jsonArray = jsonElement.getAsJsonArray();
             for (JsonElement json : jsonArray) {
                 Task task = gson.fromJson(json, Task.class);
-                manager.taskMap.put(task.getId(), task);
-                manager.taskSet.add(task);
+                taskMap.put(task.getId(), task);
+                taskSet.add(task);
             }
         }
         if (!client.load("epics").isEmpty()) {
@@ -45,7 +46,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
             JsonArray jsonArray = jsonElement.getAsJsonArray();
             for (JsonElement json : jsonArray) {
                 Epic epic = gson.fromJson(json, Epic.class);
-                manager.epicMap.put(epic.getId(), epic);
+                epicMap.put(epic.getId(), epic);
             }
         }
         if (!client.load("subtasks").isEmpty()) {
@@ -53,37 +54,28 @@ public class HttpTaskManager extends FileBackedTasksManager {
             JsonArray jsonArray = jsonElement.getAsJsonArray();
             for (JsonElement json : jsonArray) {
                 Subtask subtask = gson.fromJson(json, Subtask.class);
-                manager.subtaskMap.put(subtask.getId(), subtask);
-                manager.epicMap.get(subtask.getEpicId()).addSubtask(subtask);
-                manager.updateSubtask(subtask);
-                manager.taskSet.add(subtask);
+                subtaskMap.put(subtask.getId(), subtask);
+                epicMap.get(subtask.getEpicId()).addSubtask(subtask);
+                updateEpicStatus(subtask.getEpicId());
+                calculateTimeForEpic(subtask.getEpicId());
+                taskSet.add(subtask);
             }
         }
         if (!client.load("history").isEmpty()) {
             JsonElement jsonElement = JsonParser.parseString(client.load("history"));
-            JsonArray jsonArray = jsonElement.getAsJsonArray();
-            for (JsonElement json : jsonArray) {
-                Task task = gson.fromJson(json, Task.class);
-                if (task.getType().equals(Type.EPIC)) {
-                    Epic epic = (Epic) task;
-                    int id = epic.getId();
-                    if (manager.epicMap.containsKey(id)) {
-                        manager.historyManager.add(manager.epicMap.get(id));
-                    }
-                } else if (task.getType().equals(Type.SUBTASK)) {
-                    Subtask subtask = (Subtask) task;
-                    int id = subtask.getId();
-                    if (manager.subtaskMap.containsKey(id)) {
-                        manager.historyManager.add(manager.subtaskMap.get(id));
-                    }
-                } else {
-                    int id = task.getId();
-                    if (manager.taskMap.containsKey(id)) {
-                        manager.historyManager.add(manager.taskMap.get(id));
+            String value = jsonElement.getAsString();
+            List<Integer> historyList = Converter.historyFromString(value);
+            if (historyList != null) {
+                for (int taskId : historyList) {
+                    if (taskMap.containsKey(taskId)) {
+                        historyManager.add(taskMap.get(taskId));
+                    } else if (epicMap.containsKey(taskId)) {
+                        historyManager.add(epicMap.get(taskId));
+                    } else if (subtaskMap.containsKey(taskId)) {
+                        historyManager.add(subtaskMap.get(taskId));
                     }
                 }
             }
         }
-        return manager;
     }
 }

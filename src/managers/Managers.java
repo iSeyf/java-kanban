@@ -5,7 +5,7 @@ import interfaces.HistoryManager;
 
 public class Managers {
     public static TaskManager getDefault() {
-        return new HttpTaskManager("http://localhost:8078");
+        return new HttpTaskManager("http://localhost:8078", false);
     }
 
     public static HistoryManager getDefaultHistory() {

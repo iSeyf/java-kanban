@@ -23,11 +23,9 @@ public class HistoryHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
         if (method.equals("GET")) {
-            if (manager.getHistory().isEmpty()) {
-                writeResponse(exchange, "Список задач пуст", 200);
-            } else {
-                writeResponse(exchange, gson.toJson(manager.getHistory()), 200);
-            }
+            writeResponse(exchange, gson.toJson(manager.getHistory()), 200);
+        } else {
+            writeResponse(exchange, "Ожидается метод GET! получен: " + method, 405);
         }
     }
 

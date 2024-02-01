@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import interfaces.TaskManager;
+import managers.InMemoryTaskManager;
 import managers.Managers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +24,7 @@ class EpicTest {
 
     @BeforeEach
     public void beforeEach() {
-        taskManager = Managers.getDefault();
+        taskManager = new InMemoryTaskManager();
         taskManager.addEpic(epic);
     }
 

@@ -24,7 +24,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public FileBackedTasksManager() {
     }
 
-    public void save() {
+    protected void save() {
         try (FileWriter fileWriter = new FileWriter(fileName)) {
             fileWriter.write("id,type,name,status,description,startTime,duration,epic,\n");
             if (!taskMap.isEmpty()) {
