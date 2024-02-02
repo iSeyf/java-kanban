@@ -1,4 +1,4 @@
-package tests.serverTest;
+package serverTest;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;

@@ -9,8 +9,6 @@ import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
-import java.util.List;
-
 public class HttpTaskManager extends FileBackedTasksManager {
     protected KVTaskClient client;
     private final Gson gson;
@@ -19,7 +17,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
         client = new KVTaskClient(url);
         gson = new Gson();
         if (isLoad) {
-            load(url);
+            load();
         }
     }
 
@@ -31,14 +29,13 @@ public class HttpTaskManager extends FileBackedTasksManager {
         client.put("history", gson.toJson(history));
     }
 
-    private void load(String url) {
+    private void load() {
         if (!client.load("tasks").isEmpty()) {
             JsonElement jsonElement = JsonParser.parseString(client.load("tasks"));
             JsonArray jsonArray = jsonElement.getAsJsonArray();
             for (JsonElement json : jsonArray) {
                 Task task = gson.fromJson(json, Task.class);
-                taskMap.put(task.getId(), task);
-                taskSet.add(task);
+                loadTasks(task);
             }
         }
         if (!client.load("epics").isEmpty()) {
@@ -46,7 +43,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
             JsonArray jsonArray = jsonElement.getAsJsonArray();
             for (JsonElement json : jsonArray) {
                 Epic epic = gson.fromJson(json, Epic.class);
-                epicMap.put(epic.getId(), epic);
+                loadTasks(epic);
             }
         }
         if (!client.load("subtasks").isEmpty()) {
@@ -54,28 +51,13 @@ public class HttpTaskManager extends FileBackedTasksManager {
             JsonArray jsonArray = jsonElement.getAsJsonArray();
             for (JsonElement json : jsonArray) {
                 Subtask subtask = gson.fromJson(json, Subtask.class);
-                subtaskMap.put(subtask.getId(), subtask);
-                epicMap.get(subtask.getEpicId()).addSubtask(subtask);
-                updateEpicStatus(subtask.getEpicId());
-                calculateTimeForEpic(subtask.getEpicId());
-                taskSet.add(subtask);
+                loadTasks(subtask);
             }
         }
         if (!client.load("history").isEmpty()) {
             JsonElement jsonElement = JsonParser.parseString(client.load("history"));
             String value = jsonElement.getAsString();
-            List<Integer> historyList = Converter.historyFromString(value);
-            if (historyList != null) {
-                for (int taskId : historyList) {
-                    if (taskMap.containsKey(taskId)) {
-                        historyManager.add(taskMap.get(taskId));
-                    } else if (epicMap.containsKey(taskId)) {
-                        historyManager.add(epicMap.get(taskId));
-                    } else if (subtaskMap.containsKey(taskId)) {
-                        historyManager.add(subtaskMap.get(taskId));
-                    }
-                }
-            }
+            loadHistory(value);
         }
     }
 }

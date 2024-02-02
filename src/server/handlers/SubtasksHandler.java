@@ -88,7 +88,8 @@ public class SubtasksHandler extends TasksHandler {
                 break;
             }
             default: {
-                writeResponse(exchange, "Такого запроса нет", 400);
+                writeResponse(exchange, "Метод " + exchange.getRequestMethod()
+                        + " здесь некорректен! Ожидается другой метод! ", 405);
             }
         }
     }

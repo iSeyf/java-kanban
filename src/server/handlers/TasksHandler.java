@@ -88,12 +88,13 @@ public class TasksHandler implements HttpHandler {
                 break;
             }
             default: {
-                writeResponse(exchange, "Такого запроса нет", 400);
+                writeResponse(exchange, "Метод " + exchange.getRequestMethod()
+                        + " здесь некорректен! Ожидается другой метод! ", 405);
             }
         }
     }
 
-    protected Endpoint getEndpoint(HttpExchange exchange, String requestMethod) throws IOException {
+    protected Endpoint getEndpoint(HttpExchange exchange, String requestMethod) {
         String requestPath = exchange.getRequestURI().toString();
         String[] pathParts = requestPath.split("/");
         switch (requestMethod) {
@@ -105,14 +106,10 @@ public class TasksHandler implements HttpHandler {
                 } else if (pathParts.length == 5 && pathParts[3].equals("epic")) {
                     return Endpoint.GET_EPIC_SUBTASKS;
                 }
-                break;
             }
             case "POST": {
                 if (pathParts.length == 3) {
                     return Endpoint.POST_TASK;
-                } else {
-                    writeResponse(exchange, "Ожидается другой метод! Метод POST здесь некорректен!",
-                            405);
                 }
             }
             case "DELETE": {
@@ -120,16 +117,12 @@ public class TasksHandler implements HttpHandler {
                     return Endpoint.DELETE_ALL_TASKS;
                 } else if (pathParts.length == 4) {
                     return Endpoint.DELETE_TASK_BY_ID;
-                } else {
-                    writeResponse(exchange, "Ожидается другой метод! Метод DELETE здесь некорректен!",
-                            405);
                 }
             }
             default: {
                 return Endpoint.UNKNOWN;
             }
         }
-        return Endpoint.UNKNOWN;
     }
 
     protected Optional<Integer> getTaskId(HttpExchange exchange) {

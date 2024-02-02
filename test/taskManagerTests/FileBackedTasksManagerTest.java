@@ -1,4 +1,4 @@
-package tests.taskManagerTests;
+package taskManagerTests;
 
 import managers.FileBackedTasksManager;
 import org.junit.jupiter.api.Test;

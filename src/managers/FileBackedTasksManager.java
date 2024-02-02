@@ -59,32 +59,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 String line = fileReader.readLine();
                 if (!line.isEmpty()) {
                     Task task = Converter.TaskFromString(line);
-                    if (task.getType().equals(Type.TASK)) {
-                        manager.taskMap.put(task.getId(), task);
-                        manager.taskSet.add(task);
-                    } else if (task.getType().equals(Type.EPIC)) {
-                        Epic epic = (Epic) task;
-                        manager.epicMap.put(task.getId(), epic);
-                    } else if (task.getType().equals(Type.SUBTASK)) {
-                        Subtask subtask = (Subtask) task;
-                        manager.subtaskMap.put(task.getId(), subtask);
-                        manager.epicMap.get(subtask.getEpicId()).addSubtask(subtask);
-                        manager.updateSubtask(subtask);
-                        manager.taskSet.add(subtask);
-                    }
+                    manager.loadTasks(task);
                 } else {
-                    List<Integer> historyList = Converter.historyFromString(fileReader.readLine());
-                    if (historyList != null) {
-                        for (int taskId : historyList) {
-                            if (manager.taskMap.containsKey(taskId)) {
-                                manager.historyManager.add(manager.taskMap.get(taskId));
-                            } else if (manager.epicMap.containsKey(taskId)) {
-                                manager.historyManager.add(manager.epicMap.get(taskId));
-                            } else if (manager.subtaskMap.containsKey(taskId)) {
-                                manager.historyManager.add(manager.subtaskMap.get(taskId));
-                            }
-                        }
-                    }
+                    manager.loadHistory(fileReader.readLine());
                     break;
                 }
             }
@@ -185,5 +162,37 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public void deleteSubtaskById(Integer id) {
         super.deleteSubtaskById(id);
         save();
+    }
+
+    protected void loadTasks(Task task) {
+        if (task.getType().equals(Type.TASK)) {
+            taskMap.put(task.getId(), task);
+            taskSet.add(task);
+        } else if (task.getType().equals(Type.EPIC)) {
+            Epic epic = (Epic) task;
+            epicMap.put(task.getId(), epic);
+        } else if (task.getType().equals(Type.SUBTASK)) {
+            Subtask subtask = (Subtask) task;
+            subtaskMap.put(task.getId(), subtask);
+            epicMap.get(subtask.getEpicId()).addSubtask(subtask);
+            updateEpicStatus(subtask.getEpicId());
+            calculateTimeForEpic(subtask.getEpicId());
+            taskSet.add(subtask);
+        }
+    }
+
+    protected void loadHistory(String value) {
+        List<Integer> historyList = Converter.historyFromString(value);
+        if (historyList != null) {
+            for (int taskId : historyList) {
+                if (taskMap.containsKey(taskId)) {
+                    historyManager.add(taskMap.get(taskId));
+                } else if (epicMap.containsKey(taskId)) {
+                    historyManager.add(epicMap.get(taskId));
+                } else if (subtaskMap.containsKey(taskId)) {
+                    historyManager.add(subtaskMap.get(taskId));
+                }
+            }
+        }
     }
 }

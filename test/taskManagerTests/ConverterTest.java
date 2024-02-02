@@ -1,4 +1,4 @@
-package tests.taskManagerTests;
+package taskManagerTests;
 
 import interfaces.TaskManager;
 import managers.Converter;
